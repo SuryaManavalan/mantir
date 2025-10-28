@@ -1,32 +1,27 @@
 {
   "name": "mantir",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "vite dev",
-    "build": "vite build"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "private": true,
   "type": "module",
-  "dependencies": {
-    "@tanstack/react-router": "^1.133.32",
-    "@tanstack/react-start": "^1.133.32",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm --workspace=@mantir/web run dev",
+    "build": "npm --workspace=@mantir/web run build",
+    "start": "npm --workspace=@mantir/web run start",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:logs": "docker-compose logs -f postgres",
+    "db:migrate": "npm --workspace=@mantir/database run migrate",
+    "db:migrate:dev": "npm --workspace=@mantir/database run migrate:dev",
+    "db:generate": "npm --workspace=@mantir/database run generate",
+    "db:studio": "npm --workspace=@mantir/database run studio",
+    "db:seed": "npm --workspace=@mantir/database run seed",
+    "postinstall": "npm --workspace=@mantir/database run generate"
   },
   "devDependencies": {
-    "@types/node": "^24.9.1",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.1.0",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.18",
-    "typescript": "^5.9.3",
-    "vite": "^7.1.12",
-    "vite-tsconfig-paths": "^5.1.4"
+    "@types/node": "^20.17.9",
+    "typescript": "^5.9.3"
   }
 }
