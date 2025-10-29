@@ -1,0 +1,53 @@
+// src/routes/counter.tsx
+import * as fs from 'node:fs'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+
+const filePath = 'count.txt'
+
+async function readCount() {
+    return parseInt(
+        await fs.promises.readFile(filePath, 'utf-8').catch(() => '0'),
+    )
+}
+
+const getCount = createServerFn({
+    method: 'GET',
+}).handler(() => {
+    return readCount()
+})
+
+const updateCount = createServerFn({ method: 'POST' })
+    .inputValidator((d: number) => d)
+    .handler(async ({ data }) => {
+        const count = await readCount()
+        await fs.promises.writeFile(filePath, `${count + data}`)
+    })
+
+export const Route = createFileRoute('/counter')({
+    component: Counter,
+    loader: async () => await getCount(),
+})
+
+function Counter() {
+    const router = useRouter()
+    const state = Route.useLoaderData()
+
+    return (
+        <div className="p-8 max-w-md mx-auto min-h-screen flex flex-col justify-center">
+            <h1 className="text-2xl font-bold mb-4">Counter</h1>
+            <p className="text-lg mb-4">Current Count: {state}</p>
+            <button
+                type="button"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                onClick={() => {
+                    updateCount({ data: 1 }).then(() => {
+                        router.invalidate()
+                    })
+                }}
+            >
+                Add 1 to Count
+            </button>
+        </div>
+    )
+}

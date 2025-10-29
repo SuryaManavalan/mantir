@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from '@tanstack/react-router'
-import '../index.css'
+import appCss from '../index.css?url' // Import Tailwind CSS as URL for SSR
 
 export const Route = createRootRoute({
   head: () => ({
@@ -22,6 +22,11 @@ export const Route = createRootRoute({
       {
         title: 'TanStack Start Starter',
       },
+    ],
+    links: [
+      // Preload then apply CSS (reduces FOUC on slower networks)
+      { rel: 'preload', as: 'style', href: appCss },
+      { rel: 'stylesheet', href: appCss },
     ],
   }),
   component: RootComponent,
